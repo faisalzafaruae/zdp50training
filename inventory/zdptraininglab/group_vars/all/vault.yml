@@ -1,0 +1,12 @@
+---
+# Either encrypt this file or dont check it into Git
+# The optional mysql admin password
+vault_mysql_admin_password: foobar
+# The mandatory ZDP mysql password
+vault_zdp_db_password: foobar2
+# The hive JDBC password ZDP should use
+vault_jdbc_hive_password: hive
+# The authentication password for the registry. Default is admin
+vault_registry_admin_password: admin
+# The encryption key for the registry
+vault_encrypt_password: changeme

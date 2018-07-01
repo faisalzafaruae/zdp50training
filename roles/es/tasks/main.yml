@@ -1,0 +1,17 @@
+---
+ - name: Install ZDP Elastic Search RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-es'
+    zdp_rpm_package_name: 'zdp-es'
+    zdp_rpm_package_file_name: 'zdp-es-2.4.1.0-1.noarch.rpm'
+
+# Start the services
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+     zdp_service_name: 'zdp-es'

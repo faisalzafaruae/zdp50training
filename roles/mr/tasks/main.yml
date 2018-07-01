@@ -1,0 +1,144 @@
+---
+
+## INSTALL THE MAP REDUCE RPM
+ - name: Install ZDP Map-Reduce RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-mr'
+    zdp_rpm_package_name: 'zdp-mr'
+    zdp_rpm_package_file_name: 'zdp-mr-5.0.0_FINAL.0-1.noarch.rpm'
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-mr/bootstrap-prod.yml
+    key: jhipster.registry.password
+    value: "{{registry_admin_password}}"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-mr/bootstrap-prod.yml
+    key: spring.cloud.config.uri
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/config"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: eureka.instance.service-url.defaultZone
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/eureka/"
+
+
+## CONFIGURE MR-EXECUTOR YML FILE
+ - name: Configure zdp-mr.yml (STEP 1 of 8)
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: fs.default.uri
+    value: "{{ mrexecutor_fs_default_uri }}"
+
+ - name: Configure zdp-mr.yml (STEP 2 of 8)
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: jdbc.hive.url
+    value: "{{ mrexecutor_jdbc_hive_url }}"
+
+ - name: Configure zdp-mr.yml (STEP 3 of 8)
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: jdbc.hive.username
+    value: "{{ mrexecutor_jdbc_hive_username }}"
+
+ - name: Configure zdp-mr.yml (STEP 4 of 8)
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: jdbc.hive.password
+    value: "{{ mrexecutor_jdbc_hive_password }}"
+
+ - name: Configure zdp-mr.yml (STEP 5 of 8)
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: jdbc.hive.driver
+    value: "{{ mrexecutor_jdbc_hive_driver }}"
+
+ - name: Configure zdp-mr.yml (STEP 6 of 8)
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: jdbc.spark.url
+    value: "{{ mrexecutor_jdbc_spark_url }}"
+
+ - name: Configure zdp-mr.yml (STEP 7 of 8)
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: jdbc.spark.username
+    value: "{{ mrexecutor_jdbc_spark_username }}"
+
+ - name: Configure zdp-mr.yml (STEP 8 of 8)
+   become: True
+   yedit:
+    src: /etc/zdp-mr/zdp-mr.yml
+    key: jdbc.spark.password
+    value: "{{ mrexecutor_jdbc_spark_password }}"
+
+## CONFIGURE /etc/sysconfig/zdp-mr
+
+ - name: Configure zdp-mr environment (STEP 1 of 5)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-mr
+     regexp: '^hadoop_conf_dir='
+     replace: 'hadoop_conf_dir={{ mrexecutor_hadoop_conf_dir }}'
+     backup: no
+
+ - name: Configure zdp-mr environment (STEP 2 of 5)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-mr
+     regexp: '^sparkHome='
+     replace: 'sparkHome={{ mrexecutor_sparkHome }}'
+     backup: no
+
+ - name: Configure zdp-mr environment (STEP 3 of 5)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-mr
+     regexp: '^hive_lib='
+     replace: 'hive_lib={{ mrexecutor_hive_lib }}'
+     backup: no
+
+ - name: Configure zdp-mr environment (STEP 4 of 5)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-mr
+     regexp: '^hive_conf='
+     replace: 'hive_conf={{ mrexecutor_hive_conf }}'
+     backup: no
+
+ - name: Configure zdp-mr environment (STEP 5 of 5)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-mr
+     regexp: '^hcatalog_lib='
+     replace: 'hcatalog_lib={{ mrexecutor_hcatalog_lib }}'
+     backup: no
+
+
+
+## START THE SERVICE
+
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+     zdp_service_name: 'zdp-mr'
+

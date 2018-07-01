@@ -1,0 +1,13 @@
+---
+## HIVE CONNECTOR PARAMETERS for hive-connector yml files
+hiveconector_fs_default_uri: hdfs://sandbox-hdp.hortonworks.com:8020
+hiveconector_hive_metastore_uri: thrift://sandbox-hdp.hortonworks.com
+hiveconector_hive_metastore_port: 9083
+hiveconector_jdbc_hive_url: jdbc:hive2://sandbox-hdp.hortonworks.com:10000/default
+hiveconector_jdbc_hive_username: zaloni
+hiveconector_jdbc_hive_password: Dubai@202092
+## HIVE CONNECTOR PARAMETERS for /etc/sysconfig/zdp-hive
+hiveconector_hive_lib: /usr/hdp/2.6.4.0-91/hive/lib/*.jar
+hiveconector_hcatalog_lib: /usr/hdp/2.6.4.0-91/hive-hcatalog/share/hcatalog/*.jar
+hiveconector_web_hcatalog_lib: /usr/hdp/2.6.4.0-91/hive-hcatalog/share/webhcat/java-client/*.jar
+hiveconector_hive_conf_dir: /etc/hive/2.6.4.0-91/0

@@ -1,0 +1,13 @@
+---
+- name: Set the hive environment parameters
+  become: yes
+#  lineinfile:
+#    path: /etc/zdp-gateway/zdp-gateway.yml
+#    regexp: '^username:'
+#    line: 'username=sample'
+  ini_file:
+    path: /etc/sysconfig/zdp-hive
+    section: hive_conf_dir
+    option: hive_conf_dir
+    value: "{{ hive_lib }}"
+    backup: no

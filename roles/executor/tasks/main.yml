@@ -1,0 +1,69 @@
+---
+ - name: Install ZDP Executor RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-executor'
+    zdp_rpm_package_name: 'zdp-executor'
+    zdp_rpm_package_file_name: 'zdp-executor-5.0.0_FINAL.0-1.noarch.rpm'
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-executor/bootstrap-prod.yml
+    key: jhipster.registry.password
+    value: "{{registry_admin_password}}"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-executor/bootstrap-prod.yml
+    key: spring.cloud.config.uri
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/config"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-executor/zdp-executor.yml
+    key: eureka.instance.service-url.defaultZone
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/eureka/"
+
+# - name: Extract the cluster ID
+#   shell: mysql -uroot -p"{{ mysql_admin_password }}" -e "select CLUSTER_ID from zdp_core.CLOUD_CLUSTER_INFORMATION;" | tail -1
+#  shell: hostname
+#  register: hostname_output
+#
+#- name: Set cluster_id fact
+#  set_fact: cluster_id={{hostname_output.stdout}}
+
+# - name: Append the Cluster details in zdp-executor.yml
+#   become: yes
+#   blockinfile:
+#     path: /etc/zdp-executor/zdp-executor.yml
+#     content: |
+#        {{ cluster_id }}:
+#            MAPREDUCE:
+#             authtype: password
+#             password: {{ hiveconector_jdbc_hive_password }}
+#             pem: /home/zaloni
+#             username: {{ hiveconector_jdbc_hive_username }}
+#            SPARK:
+#             authtype: password
+#             password: {{ hiveconector_jdbc_hive_password }}
+#             pem: /home/zaloni
+#             username: {{ hiveconector_jdbc_hive_username }}
+#            HIVE:
+#             authtype: password
+#             password: {{ hiveconector_jdbc_hive_password }}
+#             pem: /home/zaloni
+#             username: {{ hiveconector_jdbc_hive_username }}
+
+
+# Start the services
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+     zdp_service_name: 'zdp-executor'

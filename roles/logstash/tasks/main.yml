@@ -1,0 +1,32 @@
+---
+ - name: Install ZDP Logstash RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-logstash'
+    zdp_rpm_package_name: 'zdp-logstash'
+    zdp_rpm_package_file_name: 'zdp-logstash-5.4.0.0-1.noarch.rpm'
+
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-logstash/zdp-logstash.yml
+    key: zdp.registry.password
+    value: "{{registry_admin_password}}"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-logstash/zdp-logstash.yml
+    key: zdp.registry.config.url
+    value: "http://{{ groups['registry']|join(',') }}:8761/config/master/application"
+
+# start the services
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+     zdp_service_name: 'zdp-logstash'

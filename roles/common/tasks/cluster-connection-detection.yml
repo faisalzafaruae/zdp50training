@@ -1,0 +1,19 @@
+ - name: Detect fs.default.uri
+   shell: |
+    grep -A1 fs.defaultFS /etc/hadoop/conf/core-site.xml | grep value | sed 's/<value>//' | sed 's/<\/value>//' | sed 's/\s*//'
+   register: zdp_fs_default_uri
+ - set_fact:
+     zdp_fs_default_uri: "{{ zdp_fs_default_uri.stdout}}"
+
+ - debug: 
+     msg: " default.fs URI is => {{zdp_fs_default_uri}}"
+
+ - name: Detect Hive JDBC Url
+   shell: |
+    grep -A1 fs.defaultFS /etc/hadoop/conf/core-site.xml | grep value | sed 's/<value>//' | sed 's/<\/value>//' | sed 's/\s*//'
+   register: zdp_hive_jdbc_url
+ - set_fact:
+     zdp_hive_jdbc_url: "{{ zdp_hive_jdbc_url.stdout}}"
+
+ - debug:
+     msg: " Hive JDBC Url is is => {{zdp_hive_jdbc_url}}"

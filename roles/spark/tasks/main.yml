@@ -1,0 +1,97 @@
+---
+## INSTALL THE RPM
+ - name: Install ZDP Spark-Executor RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-spark'
+    zdp_rpm_package_name: 'zdp-spark'
+    zdp_rpm_package_file_name: 'zdp-spark-5.0.0_FINAL.0-1.noarch.rpm'
+
+## CONFIGURE THE YML
+
+ - name: Configure zdp-spark.yml (STEP 1 of 7)
+   become: True
+   yedit:
+    src: /etc/zdp-spark/zdp-spark.yml
+    key: fs.default.uri
+    value: "{{ sparkexecutor_fs_default_uri }}"
+
+ - name: Configure zdp-spark.yml (STEP 2 of 7)
+   become: True
+   yedit:
+    src: /etc/zdp-spark/zdp-spark.yml
+    key: jdbc.spark.url
+    value: "{{ sparkexecutor_jdbc_spark_url }}"
+
+ - name: Configure zdp-spark.yml (STEP 3 of 7)
+   become: True
+   yedit:
+    src: /etc/zdp-spark/zdp-spark.yml
+    key: jdbc.spark.username
+    value: "{{ sparkexecutor_jdbc_spark_username }}"
+
+ - name: Configure zdp-spark.yml (STEP 4 of 7)
+   become: True
+   yedit:
+    src: /etc/zdp-spark/zdp-spark.yml
+    key: jdbc.spark.password
+    value: "{{ sparkexecutor_jdbc_spark_password }}"
+
+ - name: Configure zdp-spark.yml (STEP 5 of 7)
+   become: True
+   yedit:
+    src: /etc/zdp-spark/zdp-spark.yml
+    key: jdbc.spark.driver
+    value: "{{ sparkexecutor_jdbc_spark_driver }}"
+
+ - name: Configure zdp-spark.yml (STEP 6 of 7)
+   become: True
+   yedit:
+    src: /etc/zdp-spark/zdp-spark.yml
+    key: spark.master.url
+    value: "{{ sparkexecutor_spark_master_url }}"
+
+ - name: Configure zdp-spark.yml (STEP 7 of 7)
+   become: True
+   yedit:
+    src: /etc/zdp-spark/zdp-spark.yml
+    key: spark.version
+    value: "{{ sparkexecutor_spark_master_version }}"
+
+## CONFIGURE /etc/sysconfig/zdp-spark 
+ - name: Configure zdp-spark environment hadoop_conf_dir (STEP 1 of 3)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-spark
+     regexp: '^hadoop_conf='
+     replace: 'hadoop_conf={{ sparkexecutor_hadoop_conf }}'
+     backup: no
+
+ - name: Configure zdp-spark environment hadoop_conf_dir (STEP 2 of 3)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-spark
+     regexp: '^spark_home='
+     replace: 'spark_home={{ sparkexecutor_spark_home }}'
+     backup: no
+
+ - name: Configure zdp-spark environment hadoop_conf_dir (STEP 3 of 3)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-spark
+     regexp: '^spark_lib='
+     replace: 'spark_lib={{ sparkexecutor_spark_lib }}'
+     backup: no
+
+
+
+## START THE SERVICE
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+     zdp_service_name: 'zdp-spark'
+

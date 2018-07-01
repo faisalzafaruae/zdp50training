@@ -1,0 +1,50 @@
+---
+- hosts: registry
+  roles:
+    - registry
+
+- hosts: es
+  roles:
+    - es
+
+- hosts: logstash
+  gather_facts: False
+  roles:
+    - logstash
+
+- hosts: activemq
+  roles:
+    - activemq
+
+- hosts: lineage
+  roles:
+    - lineage
+
+- hosts: gateway
+  roles:
+    - gateway
+
+- hosts: ingestion-warden
+  roles:
+    - ingestion-warden
+
+- hosts: executor
+  roles:
+    - executor
+
+- hosts: kibana
+  roles:
+    - kibana
+
+- hosts: mr
+  roles:
+    - mr
+
+- hosts: spark
+  roles:
+    - spark
+
+- hosts: hive
+  roles:
+    - hive
+

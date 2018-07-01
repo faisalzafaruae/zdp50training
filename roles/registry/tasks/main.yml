@@ -1,0 +1,96 @@
+---
+## Sets up the ZDP Registry
+ - name: Install ZDP Registry RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-registry'
+    zdp_rpm_package_name: 'zdp-registry'
+    zdp_rpm_package_file_name: 'zdp-registry-3.0.3.0-1.noarch.rpm'
+
+ - name: Configure Registry with MySQL (1 of 3)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: zdp.datasource.password
+    value: "{{zdp_db_password}}"
+
+ - name: Configure Registry with MySQL (2 of 3)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: zdp.datasource.username
+    value: "{{zdp_db_user}}"
+
+ - name: Configure Registry with MySQL (3 of 3)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: zdp.datasource.url
+    value: "jdbc:mysql://{{ groups['mysql']|join(',') }}:3306/{{zdp_db_name}}?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false"
+
+ - name: Configure Registry with ActiveMQ (1 of 4)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: activemq.broker.sslUrl
+    value: "failover://ssl://{{ groups['activemq']|join(',') }}:61617?jms.prefetchPolicy.all=1"
+
+ - name: Configure Registry with ActiveMQ (2 of 4)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: activemq.broker.url
+    value: "failover://tcp://{{ groups['activemq']|join(',') }}:61616?jms.prefetchPolicy.all=1"
+
+ - name: Configure Registry with ActiveMQ (3 of 4)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: activemq.broker.username
+    value: system
+    #TODO - set a different username
+
+ - name: Configure Registry with ActiveMQ (4 of 4)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: activemq.broker.password
+    value: "ENC(D0DXLzMhX+JsfItAiL2Yww==)"
+    #TODO - set a different password
+
+ - name: Configure Registry with Elasticsearch
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: elasticsearch.host
+    value: "{{ groups['es']|join(',') }}"
+
+ - name: Configure Registry with Logstash
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: logstash.host
+    value: "{{ groups['logstash']|join(',') }}"
+
+ - name: Configure Registry Security (1 of 2)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/application.yml
+    key: jhipster.security.authentication.jwt.secret
+    value: "{{encrypt_password}}"
+
+ - name: Configure Registry Security (2 of 2)
+   become: True
+   yedit:
+    src: /etc/zdp-registry/zdp-registry.yml
+    key: security.user.password
+    value: "{{registry_admin_password}}"
+
+ - name: Start the Service
+   include_role:
+    name: common
+    tasks_from: service
+   vars:
+    zdp_service_name: 'zdp-registry'

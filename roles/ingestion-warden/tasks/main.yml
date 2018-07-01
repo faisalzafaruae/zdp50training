@@ -1,0 +1,38 @@
+---
+ - name: Install ZDP Ingestion-Warden RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-ingestion-warden'
+    zdp_rpm_package_name: 'zdp-ingestion-warden'
+    zdp_rpm_package_file_name: 'zdp-ingestion-warden-5.0.0_FINAL.0-1.noarch.rpm'
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-ingestion-warden/bootstrap-prod.yml
+    key: jhipster.registry.password
+    value: "{{registry_admin_password}}"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-ingestion-warden/bootstrap-prod.yml
+    key: spring.cloud.config.uri
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/config"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-ingestion-warden/zdp-ingestion-warden.yml
+    key: eureka.instance.service-url.defaultZone
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/eureka/"
+
+# Start the services
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+     zdp_service_name: 'zdp-ingestion-warden'

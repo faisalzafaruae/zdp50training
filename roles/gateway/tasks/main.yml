@@ -1,0 +1,47 @@
+---
+
+ - name: Install ZDP Gateway RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-gateway'
+    zdp_rpm_package_name: 'zdp-gateway'
+    zdp_rpm_package_file_name: 'zdp-gateway-5.0.0_FINAL.0-1.noarch.rpm'
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-gateway/bootstrap-prod.yml
+    key: jhipster.registry.password
+    value: "{{registry_admin_password}}"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-gateway/bootstrap-prod.yml
+    key: spring.cloud.config.uri
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/config"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-gateway/zdp-gateway.yml
+    key: eureka.instance.service-url.defaultZone
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/eureka/"
+
+ - name: Configure zdp gateway
+   become: True
+   yedit:
+    src: /etc/zdp-gateway/zdp-gateway.yml
+    key: server.port
+    value: "{{ zdp_gateway_port }}"
+    when: zdp_gateway_port is defined
+
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+    zdp_service_name: 'zdp-gateway'
+

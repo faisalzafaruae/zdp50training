@@ -1,0 +1,5 @@
+ - name: Start {{ zdp_service_name }}
+   become: yes
+   service:
+     name: "{{ zdp_service_name }}"
+     state: started

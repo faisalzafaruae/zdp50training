@@ -1,0 +1,18 @@
+---
+ - name: Install ZDP Active-MQ RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-activemq'
+    zdp_rpm_package_name: 'zdp-activemq'
+    zdp_rpm_package_file_name: 'zdp-activemq-5.13.0.0-1.noarch.rpm'
+
+
+#Start the services
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+     zdp_service_name: 'zdp-activemq'

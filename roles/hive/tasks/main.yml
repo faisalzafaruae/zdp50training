@@ -1,0 +1,115 @@
+---
+# INSTALLING HIVE CONNECTOR
+ - name: Install ZDP Hive-Connector RPM Package
+   include_role:
+     name: common
+     tasks_from: install
+   vars:
+    zdp_service_name: 'zdp-hive'
+    zdp_rpm_package_name: 'zdp-hive'
+    zdp_rpm_package_file_name: 'zdp-hive-5.0.0_FINAL.0-1.noarch.rpm'
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-hive/bootstrap-prod.yml
+    key: jhipster.registry.password
+    value: "{{registry_admin_password}}"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-hive/bootstrap-prod.yml
+    key: spring.cloud.config.uri
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/config"
+
+ - name: Configure with Registry
+   become: True
+   yedit:
+    src: /etc/zdp-hive/zdp-hive.yml
+    key: eureka.instance.service-url.defaultZone
+    value: "http://admin:${jhipster.registry.password}@{{ groups['registry']|join(',') }}:8761/eureka/"
+
+## CONFIGURING zdp-hive.yml
+ - name: Configure zdp-hive.yml (STEP 1 of 6)
+   become: True
+   yedit:
+    src: /etc/zdp-hive/zdp-hive.yml
+    key: fs.default.uri
+    value: "{{ hiveconector_fs_default_uri }}"
+
+ - name: Configure zdp-hive.yml (STEP 2 of 6)
+   become: True
+   yedit:
+    src: /etc/zdp-hive/zdp-hive.yml
+    key: hive.metastore.uri
+    value: "{{ hiveconector_hive_metastore_uri }}"
+
+ - name: Configure zdp-hive.yml (STEP 3 of 6)
+   become: True
+   yedit:
+    src: /etc/zdp-hive/zdp-hive.yml
+    key: hive.metastore.port
+    value: "{{ hiveconector_hive_metastore_port }}"
+
+ - name: Configure zdp-hive.yml (STEP 4 of 6)
+   become: True
+   yedit:
+    src: /etc/zdp-hive/zdp-hive.yml
+    key: jdbc.hive.url
+    value: "{{ hiveconector_jdbc_hive_url }}"
+
+ - name: Configure zdp-hive.yml (STEP 5 of 6)
+   become: True
+   yedit:
+    src: /etc/zdp-hive/zdp-hive.yml
+    key: jdbc.hive.username
+    value: "{{ hiveconector_jdbc_hive_username }}"
+
+ - name: Configure zdp-hive.yml (STEP 6 of 6)
+   become: True
+   yedit:
+    src: /etc/zdp-hive/zdp-hive.yml
+    key: jdbc.hive.password
+    value: "{{ hiveconector_jdbc_hive_password }}"
+
+# CONFIGURING /etc/sysconfig/zdp-hive
+ - name: Configure zdp-hive environment (STEP 1 of 4)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-hive
+     regexp: '^hive_lib='
+     replace: 'hive_lib={{ hiveconector_hive_lib }}'
+     backup: no
+ - name: Configure zdp-hive environment (STEP 2 of 4)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-hive
+     regexp: '^hcatalog_lib='
+     replace: 'hcatalog_lib={{ hiveconector_hcatalog_lib }}'
+     backup: no
+ - name: Configure zdp-hive environment (STEP 3 of 4)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-hive
+     regexp: '^web_hcatalog_lib='
+     replace: 'web_hcatalog_lib={{ hiveconector_web_hcatalog_lib }}'
+     backup: no
+ - name: Configure zdp-hive environment (STEP 4 of 4)
+   become: True
+   replace:
+     path: /etc/sysconfig/zdp-hive
+     regexp: '^hive_conf_dir='
+     replace: 'hive_conf_dir={{ hiveconector_hive_conf_dir }}'
+     backup: no
+
+
+# START THE SERVICE
+ - name: Start the Service
+   include_role:
+     name: common
+     tasks_from: service
+   vars:
+     zdp_service_name: 'zdp-hive'
+
+

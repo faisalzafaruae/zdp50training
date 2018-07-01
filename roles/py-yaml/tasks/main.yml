@@ -1,0 +1,6 @@
+---
+ - name: Install pyYAML
+   become: yes
+   yum:
+     name: PyYAML
+     state: present

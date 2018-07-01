@@ -1,0 +1,14 @@
+---
+## HIVE CONNECTOR PARAMETERS for hive-connector yml files
+hiveconector_fs_default_uri: hdfs://mica-perf-n1.zalonilabs.com:8020
+hiveconector_hive_metastore_uri: thrift://mica-perf-n1.zalonilabs.com
+hiveconector_hive_metastore_port: 9083
+hiveconector_jdbc_hive_url: 
+hiveconector_jdbc_hive_username: test
+hiveconector_jdbc_hive_password: test
+## HIVE CONNECTOR PARAMETERS for /etc/sysconfig/zdp-mr
+hiveconector_hive_lib: /usr/hdp/2.6.2.14-5/hive/lib/*.jar
+hiveconector_hcatalog_lib: /usr/hdp/2.6.2.14-5/hive-hcatalog/share/hcatalog/*.jar
+hiveconector_web_hcatalog_lib: /usr/hdp/2.6.2.14-5/hive-hcatalog/share/webhcat/java-client/*.jar
+hiveconector_hive_conf_dir: /usr/hdp/2.6.2.14-5/hive/conf
+  

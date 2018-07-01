@@ -1,0 +1,35 @@
+# All common properties for the ZDP Installer
+---
+ansible_user: root
+
+# Property tells the 'install' role to only upgrade the rpm in place without making any configuration changes.
+zdp_upgrade_only: False
+
+# This tells where the ZDP RPMS are located.  This has to be one of 'Control', 'Target', 'Yum' or 'Network'
+# Control - RPMs are uploaded from the ansible server from the {{zdp_rpms_location_on_control_server}} directory
+# Target - RPMs are picked up from the remote hosts from the  {{zdp_rpms_location_on_target_server}} directory
+# Yum - RPMs are installed from a yum repository. remote hosts are assumed to be configured with yum
+# Network - RPM's are downloaded from a http url defined by {{zdp_rpms_http_location}}
+zdp_rpms_location: Control
+
+# based on the value of  {{zdp_rpms_location}} one of the following variables are used
+zdp_rpms_location_on_control_server: '/home/zaloni'
+zdp_rpms_location_on_target_server: '/tmp'
+zdp_rpms_http_location: 'http://10.1.11.59:8090/job/bedrock-pipeline/job/release%252F5.0.0/lastSuccessfulBuild/artifact/target/'
+
+# Which database should ZDP use?
+zdp_db_name: zdp_core
+# Which DB credentials should ZDP use
+zdp_db_user: zaloni
+zdp_db_password: "{{ vault_zdp_db_password }}"
+# Should ansible create the DB user, and grant permissions on MySQL?
+create_database_user: False
+# Should ansible attempt to create the ZDP database?
+create_database: False
+# Optional credentials to the MySQL admin credentials. Secrets are defined in the vault.yml files
+mysql_admin_user: root
+mysql_admin_password: "{{ vault_mysql_admin_password }}"
+# The authentication password for the registry
+registry_admin_password: "{{ vault_registry_admin_password }}"
+# The encryption key for the registry. Will be set only during a fresh install
+encrypt_password: "{{ vault_encrypt_password }}"

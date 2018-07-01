@@ -1,0 +1,50 @@
+ - debug:
+     msg: |
+           "Installing {{ zdp_rpm_package_name }} with file name {{ zdp_rpm_package_file_name }} 
+           "RPMS Location  => {{ zdp_rpms_location }} zdp_upgrade_rpms_only is {{zdp_upgrade_only}}"
+     verbosity: 1
+
+ - name: Erase RPM Package for {{ zdp_service_name }}
+   become: yes
+   yum:
+       name: "{{ zdp_rpm_package_name }}"
+       state: absent
+   when: zdp_upgrade_only == False
+
+ - name: "Setting the variable zdp_rpm_package_file_location for staged rpmfiles {{ zdp_service_name }}"
+   set_fact:
+     zdp_rpm_package_file_location: '{{ zdp_rpms_location_on_target_server }}/{{ zdp_rpm_package_file_name }}'
+   when: zdp_rpms_location == 'Target'
+
+ - name: "Create Temp Dir for holding rpm"
+   tempfile: state=directory suffix=build
+   register: temp_path
+   when:
+     zdp_rpms_location == 'Network' or zdp_rpms_location == 'Control'
+
+ - name: "Copy RPM Package for {{ zdp_service_name }}"
+   block:
+    - copy:
+       src: '{{ zdp_rpms_location_on_control_server }}/{{ zdp_rpm_package_file_name }}'
+       dest: '{{temp_path.path}}'
+    - set_fact:
+        zdp_rpm_package_file_location: '{{temp_path.path}}/{{ zdp_rpm_package_file_name }}'
+   when: zdp_rpms_location == 'Control'
+
+ - name: "Get RPM Package for {{ zdp_service_name }}"
+   block:
+    - get_url:
+        url: '{{ zdp_rpms_http_location }}/{{ zdp_rpm_package_file_name }}'
+        dest: '{{temp_path.path}}'
+    - set_fact:
+        zdp_rpm_package_file_location: '{{temp_path.path}}/{{ zdp_rpm_package_file_name }}'
+   when: zdp_rpms_location == 'Network'
+
+ - name: Install RPM package for {{ zdp_service_name }}
+   become: yes
+   yum: name='{{zdp_rpm_package_file_location}}' state=present
+
+ - name: "Delete temp dir"
+   file:
+    name: '{{temp_path.path}}'
+    state: absent

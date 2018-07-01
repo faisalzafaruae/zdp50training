@@ -1,0 +1,13 @@
+---
+## SPARK EXECUTOR PARAMETERS for zdp spark executor yml files
+sparkexecutor_fs_default_uri: hdfs://sandbox-hdp.hortonworks.com:8020
+sparkexecutor_jdbc_spark_url: jdbc:hive2://sandbox-hdp.hortonworks.com:10016/default
+sparkexecutor_jdbc_spark_username: zaloni
+sparkexecutor_jdbc_spark_password: Dubai@202092
+sparkexecutor_jdbc_spark_driver: org.apache.hive.jdbc.HiveDriver
+sparkexecutor_spark_master_url: yarn-client
+sparkexecutor_spark_master_version: 2
+## SPARK EXECUTOR PARAMETERS for /etc/sysconfig/zdp-spark
+sparkexecutor_hadoop_conf: /usr/hdp/2.6.4.0-91/hadoop/conf
+sparkexecutor_spark_home: /usr/hdp/2.6.4.0-91/spark2
+sparkexecutor_spark_lib: /usr/hdp/2.6.4.0-91/spark2/jars/*.jar

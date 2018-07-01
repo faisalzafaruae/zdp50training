@@ -33,3 +33,5 @@ mysql_admin_password: "{{ vault_mysql_admin_password }}"
 registry_admin_password: "{{ vault_registry_admin_password }}"
 # The encryption key for the registry. Will be set only during a fresh install
 encrypt_password: "{{ vault_encrypt_password }}"
+# Which port the ZDP gateway will run on 
+zdp_gateway_port: 9090 

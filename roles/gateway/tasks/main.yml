@@ -36,7 +36,7 @@
     src: /etc/zdp-gateway/zdp-gateway.yml
     key: server.port
     value: "{{ zdp_gateway_port }}"
-    when: zdp_gateway_port is defined
+#    when: zdp_gateway_port is defined
 
  - name: Start the Service
    include_role:

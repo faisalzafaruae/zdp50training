@@ -49,8 +49,8 @@
     name: '{{temp_path.path}}'
     state: absent
 
-- name: Install Python yaml
-  become: yes
-  yum:
-    name: PyYAML
-    state: present
+ - name: Install Python yaml
+   become: yes
+   yum:
+     name: PyYAML
+     state: present

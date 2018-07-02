@@ -3,7 +3,7 @@
 # The optional mysql admin password
 vault_mysql_admin_password: hadoop
 # The mandatory ZDP mysql password
-vault_zdp_db_password: zdpdba
+vault_zdp_db_password: zdpdbapwd
 # The hive JDBC password ZDP should use
 vault_jdbc_hive_password: Dubai@202092
 # The authentication password for the registry. Default is admin

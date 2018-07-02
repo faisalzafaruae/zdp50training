@@ -8,5 +8,5 @@
     when: create_database == True
 
   - name: Create the ZDP Core User if it doesn't exist and Grant permissions
-    command: "mysql -u{{mysql_admin_user}} -p{{mysql_admin_password}} -e \"GRANT ALL ON {{ zdp_db_name }}.* TO \'{{ zdp_db_user}}\' IDENTIFIED BY \'{{ zdp_db_password }}\'\""
+    command: "mysql -u{{mysql_admin_user}} -p{{mysql_admin_password}} -e \"GRANT ALL ON {{ zdp_db_name }}.* TO \'{{ zdp_db_user}}\'@\'{{groups['mysql'] | first}}\' IDENTIFIED BY \'{{ zdp_db_password }}\'\""
     when: create_database_user == True

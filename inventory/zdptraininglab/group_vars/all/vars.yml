@@ -20,7 +20,7 @@ zdp_rpms_http_location: 'http://10.1.11.59:8090/job/bedrock-pipeline/job/release
 # Which database should ZDP use?
 zdp_db_name: zdp_core
 # Which DB credentials should ZDP use
-zdp_db_user: zaloni
+zdp_db_user: zaloni_db
 zdp_db_password: "{{ vault_zdp_db_password }}"
 # Should ansible create the DB user, and grant permissions on MySQL?
 create_database_user: True

@@ -7,6 +7,10 @@
   roles:
     - es
 
+- hosts: mysql
+  roles:
+    - mysql
+
 - hosts: logstash
   gather_facts: False
   roles:

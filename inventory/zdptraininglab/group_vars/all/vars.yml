@@ -23,9 +23,9 @@ zdp_db_name: zdp_core
 zdp_db_user: zaloni
 zdp_db_password: "{{ vault_zdp_db_password }}"
 # Should ansible create the DB user, and grant permissions on MySQL?
-create_database_user: False
+create_database_user: True
 # Should ansible attempt to create the ZDP database?
-create_database: False
+create_database: True
 # Optional credentials to the MySQL admin credentials. Secrets are defined in the vault.yml files
 mysql_admin_user: root
 mysql_admin_password: "{{ vault_mysql_admin_password }}"

@@ -13,7 +13,7 @@
    yedit:
     src: /etc/zdp-kibana/zdp-kibana.yml
     key: eureka.client.service.url.defaultZone
-    value: "http://admin:{{registry_admin_password}}@{{ groups['registry']|join(',') }}:8761/eureka/""
+    value: "http://admin:{{registry_admin_password}}@{{ groups['registry']|join(',') }}:8761/eureka/"
 
 # Start the services
  - name: Start the Service

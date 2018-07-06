@@ -1,54 +1,79 @@
 ---
+- hosts: mysql
+  tasks:
+  - include_role:
+     name: mysql
+     tasks_from: zdp-setup
+
 - hosts: registry
-  roles:
-    - registry
+  tasks:
+  - include_role:
+     name: registry
+     tasks_from: install
 
 - hosts: es
-  roles:
-    - es
-
-- hosts: mysql
-  roles:
-    - mysql
+  tasks:
+  - include_role:
+     name: es
+     tasks_from: install
 
 - hosts: logstash
-  gather_facts: False
-  roles:
-    - logstash
+  tasks:
+  - include_role:
+     name: logstash
+     tasks_from: install
 
 - hosts: activemq
-  roles:
-    - activemq
+  tasks:
+  - include_role:
+     name: activemq
+     tasks_from: install
 
 - hosts: lineage
-  roles:
-    - lineage
+  tasks:
+  - include_role:
+     name: lineage
+     tasks_from: install
 
 - hosts: gateway
-  roles:
-    - gateway
+  tasks:
+  - include_role:
+     name: gateway
+     tasks_from: install
 
 - hosts: ingestion-warden
-  roles:
-    - ingestion-warden
+  tasks:
+  - include_role:
+     name: ingestion-warden
+     tasks_from: install
 
 - hosts: executor
-  roles:
-    - executor
+  tasks:
+  - include_role:
+     name: executor
+     tasks_from: install
 
 - hosts: kibana
-  roles:
-    - kibana
+  tasks:
+  - include_role:
+     name: kibana
+     tasks_from: install
 
 - hosts: mr
-  roles:
-    - mr
+  tasks:
+  - include_role:
+     name: mr
+     tasks_from: install
 
 - hosts: spark
-  roles:
-    - spark
+  tasks:
+  - include_role:
+     name: spark
+     tasks_from: install
 
 - hosts: hive
-  roles:
-    - hive
+  tasks:
+  - include_role:
+     name: hive
+     tasks_from: install
 

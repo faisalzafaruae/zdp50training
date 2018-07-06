@@ -1,6 +1,6 @@
  - debug:
      msg: |
-           "Installing {{ zdp_rpm_package_name }} with file name {{ zdp_rpm_package_file_name }} 
+           "Installing {{ zdp_rpm_package_name }} with file name {{ zdp_rpm_package_file_name }}
            "RPMS Location  => {{ zdp_rpms_location }} zdp_upgrade_rpms_only is {{zdp_upgrade_only}}"
      verbosity: 1
 
@@ -43,14 +43,22 @@
  - name: Install RPM package for {{ zdp_service_name }}
    become: yes
    yum: name='{{zdp_rpm_package_file_location}}' state=present
+   when: zdp_rpms_location != 'Yum'
+
+ - name: Install RPM package for {{ zdp_service_name }}
+   become: yes
+   yum: name='{{zdp_service_name}}' state=latest
+   when: zdp_rpms_location == 'Yum'
 
  - name: "Delete temp dir"
    file:
     name: '{{temp_path.path}}'
     state: absent
+   when: zdp_rpms_location != 'Yum'
 
  - name: Install Python yaml
    become: yes
    yum:
      name: PyYAML
      state: present
+

@@ -55,3 +55,10 @@
     name: '{{temp_path.path}}'
     state: absent
    when: zdp_rpms_location != 'Yum'
+
+ - name: Install Python yaml
+   become: yes
+   yum:
+     name: PyYAML
+     state: present
+

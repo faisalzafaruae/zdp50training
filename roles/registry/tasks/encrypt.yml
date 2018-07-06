@@ -1,0 +1,10 @@
+---
+#This is a custom task that encrypts a given string and returns the obsfucated form.
+# Run it only on the host that has the registry
+- name: encrypt
+  command: /opt/zdp/zdp-registry/bin/encrypt.sh password={{encrypt_password}} input={{input}} verbose=false
+  register: std
+  become: yes
+
+- set_fact:
+    output: "{{ std.stdout }}"

@@ -9,12 +9,17 @@
     zdp_rpm_package_name: 'zdp-registry'
     zdp_rpm_package_file_name: 'zdp-registry-3.0.3.0-1.noarch.rpm'
 
+ - name: run encryptor
+   include: encrypt.yml
+   vars:
+    input: zdp_db_password
+
  - name: Configure Registry with MySQL (1 of 3)
    become: True
    yedit:
     src: /etc/zdp-registry/application.yml
     key: zdp.datasource.password
-    value: "{{zdp_db_password}}"
+    value: "ENC({{output}})"
 
  - name: Configure Registry with MySQL (2 of 3)
    become: True
@@ -23,42 +28,49 @@
     key: zdp.datasource.username
     value: "{{zdp_db_user}}"
 
+## Sets the mysql hosts in registry. If there are multiple hosts, we assume make the url like so:
+## jdbc:mysql:loadbalance://host1:6446,host2:6446/zdp_core_501?useUnicode=true&characterEncoding=utf8&useSSL=false
+## else we set it as
+## jdbc:mysql://host1:3306/zdp_core_501?useUnicode=true&characterEncoding=utf8&useSSL=false
+## Note how we guess the port number based on the number of hosts.
  - name: Configure Registry with MySQL (3 of 3)
    become: True
    yedit:
     src: /etc/zdp-registry/application.yml
     key: zdp.datasource.url
-    value: "jdbc:mysql://{{ groups['mysql']|join(',') }}:3306/{{zdp_db_name}}?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false"
+    value: >
+            jdbc:mysql:{%if groups['mysql'] | length > 1 -%}loadbalance:{%- endif%}//
+            {%- for item in groups['mysql'] %}{{item}}:
+            {%-if groups['mysql'] | length > 1 -%}6446{%- else %}3306{%- endif %}
+            {%-if groups['mysql'] | last != item -%},{%- endif%}
+            {%- endfor -%}/{{zdp_db_name}}?autoReconnect=true&useUnicode=true&characterEncoding=utf8&useSSL=false
 
- - name: Configure Registry with ActiveMQ (1 of 4)
+ - name: Configure Registry with ActiveMQ (1 of 3)
    become: True
    yedit:
     src: /etc/zdp-registry/application.yml
     key: activemq.broker.sslUrl
     value: "failover://ssl://{{ groups['activemq']|join(',') }}:61617?jms.prefetchPolicy.all=1"
 
- - name: Configure Registry with ActiveMQ (2 of 4)
+ - name: Configure Registry with ActiveMQ (2 of 3)
    become: True
    yedit:
     src: /etc/zdp-registry/application.yml
     key: activemq.broker.url
     value: "failover://tcp://{{ groups['activemq']|join(',') }}:61616?jms.prefetchPolicy.all=1"
 
- - name: Configure Registry with ActiveMQ (3 of 4)
-   become: True
-   yedit:
-    src: /etc/zdp-registry/application.yml
-    key: activemq.broker.username
-    value: system
-    #TODO - set a different username
+ - name: run encryptor
+   include: encrypt.yml
+   vars:
+    input: "{{ active_mq_system_password }}"
 
- - name: Configure Registry with ActiveMQ (4 of 4)
+ - name: Configure Registry with ActiveMQ (3 of 3)
    become: True
    yedit:
     src: /etc/zdp-registry/application.yml
-    key: activemq.broker.password
-    value: "ENC(D0DXLzMhX+JsfItAiL2Yww==)"
-    #TODO - set a different password
+    key: activemq.password
+    value: "ENC({{output}})"
+
 
  - name: Configure Registry with Elasticsearch
    become: True
